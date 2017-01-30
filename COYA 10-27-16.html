@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2016 by wakaspar (http://jsbin.com/pituqon/9/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<script type="text/javascript" src="http://gc.kis.scr.kaspersky-labs.com/CA3D8468-2947-3947-85DE-F59C4091195E/main.js" charset="UTF-8"></script></head>
+<body>
+
+<script id="jsbin-javascript">
+/* Project Coya:  a Choose Your Own Adventure style game, combining simple elements from pen & paper RPG's
+                  with the fundamentals of JavaScript. */
+
+
+/////////////////////
+/* Input User Name */
+/////////////////////
+var userName = prompt
+("Please enter your name:", "Will Kaspar");
+
+
+///////////////////////
+/* Class Constructor */
+///////////////////////
+function ClassBuild (name, hp, mp, ac, spells){
+  this.name = name;
+  this.hp = hp;
+  this.mp = mp;
+  this.ac = ac;
+  this.spells = spells;
+}
+    /* Class Switch */
+switch (prompt
+("Please Choose Your Class:  fighter, wizard, paladin, necromancer", "fighter")){
+  case "fighter": var fighter = new ClassBuild("fighter", 100, 50, 8,
+                  ["Bull Rush",4,"Shield Wall",-5,"Berserk",100]);
+    var charClass = fighter;
+    break;
+  case "wizard" : var wizard = new ClassBuild("wizard", 50, 100, 5,
+                  ["Magic Missle",7,"Arcane Bubble",-4,"Teleport",100]);
+    var charClass = wizard;
+    break;
+  case "paladin" : var paladin = new ClassBuild("paladin", 75, 75, 9,
+                  ["Exorcism",3,"Holy Shield",-5,"Ressurect",100]);
+    var charClass = paladin;
+    break;
+  case "necromancer" : var necromancer = new ClassBuild("necromancer", 35, 120, 4,
+                  ["Death Bolt",8,"Drain Life",-12,"Raise Dead",100,12]);                     /* That last 12 is the + for DL */
+    var charClass = necromancer;
+    break;
+  default:                                                                                                                                                               
+    console.log("Error!");
+    alert("Error!");
+    break;
+}
+
+
+/////////////////////////
+/* Monster Constructor */
+/////////////////////////
+function MonsterBuild(name, hp, ac, spells){
+  this.name = name;
+  this.hp = hp;
+  this.ac = ac;
+  this.spells = spells;
+}
+    /* Monster Array */
+var monsterArray = ["kobold", "lycanthrope", "tiefling", "djinn", "drake"];
+var randomizer = Math.floor(5*Math.random());
+var monsterChoice = monsterArray[randomizer];
+
+
+    /* Monster Switch */
+switch(monsterChoice){
+  case "kobold" : var kobold = new MonsterBuild("Kobold", 25, 2);
+    var currentlyFighting = kobold;
+    break;
+  case "lycanthrope" : var lycan = new MonsterBuild("Lycanthrope", 35, 3);
+    var currentlyFighting = lycan;
+    break;
+  case "tiefling" : var tiefling = new MonsterBuild("Tiefling", 40, 5);
+    var currentlyFighting = tiefling;
+    break;
+  case "djinn" : var djinn = new MonsterBuild("Djinn", 75, 6);
+    var currentlyFighting = djinn;
+    break;
+  case "drake" : var drake = new MonsterBuild("Drake", 100, 5);
+    var currentlyFighting = drake;
+    break;
+  case "brewmaster" : var brewmater = new MonsterBuild("Brewmaster", 150, 4);
+    var currentlyFighting = brewmaster;
+  default: 
+    console.log("Error!");
+    alert("Error!");
+    break;
+}
+
+
+///////////////////////
+/* Combat Engine v.2 */
+///////////////////////
+var x;
+var y;
+var z;
+
+var cf = currentlyFighting;
+
+function Initiative() {x = Math.floor(2*Math.random());}
+function RollToHit() {y = Math.floor(10*Math.random()+3);}
+function EnemyRoll() {RollToHit();}
+
+function Damage(w) {z = Math.floor(10*Math.random()+w);}
+function EnemyDamage() {Damage(0);}
+function CharDamage() {Damage(10);}
+
+function UserTurn(){
+RollToHit(y);
+  if(y >= cf.ac){
+    console.log("User hit: "+y+"; EAC: "+cf.ac);
+    alert("You Hit:  "+y);
+    CharDamage();
+      console.log("User Damage: "+z);
+      alert("You do "+z+" damage!");
+      cf.hp -= z;
+  } else {
+    console.log("User miss: "+y+"; EAC: "+cf.ac);
+    console.log("Enemy HP Remaining: \n"+cf.hp);
+    alert("You miss:  "+y);}
+    alert("The "+cf.name+" has "+cf.hp+" health remaining");
+}
+
+function ComputerTurn(){
+EnemyRoll(y);
+  if(y >= charClass.ac){
+    console.log("Enemy hit: "+y+"; AC: "+charClass.ac);
+    alert("The "+cf.name+" strikes you!");
+    EnemyDamage();
+      console.log("Enemy Damage: "+z);
+      alert("The "+cf.name+" does "+z+" damage!");
+      charClass.hp -= z;
+  } else {
+    console.log("Enemy miss: "+y+"; AC: "+charClass.ac);
+    console.log("Your HP Remaining: \n"+charClass.hp);
+    alert("The "+cf.name+" misses you!");}
+    alert("You have "+charClass.hp+" health remaining.");
+}
+
+Initiative();
+RollToHit();
+EnemyRoll();
+Damage();
+EnemyDamage();
+CharDamage();
+
+    /* Turn Based Combat */
+function Raid(m) {if(m===true){
+  
+Initiative(x);
+  
+alert("You are currently fighting a "+cf.name+
+      " with "+cf.hp+" hp.");
+console.log("monster:  "+cf.name+
+      ", hp:  "+cf.hp+".");
+  
+while(cf.hp >= 0 && charClass.hp >= 0){                // Health Check
+  
+  if (x!='1' || x!='0'){Initiative();}
+  if(x=='0'){                                         // User goes first.
+    console.log("User first.\nInitiative: "+x);
+    alert("You go first.\nInitiative: "+x);
+    UserTurn();
+    ComputerTurn();
+    
+} else if(x=='1') {                                   // Comp goes first.
+  console.log("Comp first.\nInitiative:  "+x);
+  alert("Enemy goes first.\nInitiative:  "+x);
+    ComputerTurn(y,z);
+    UserTurn(y,z);
+} 
+  /* Battle Resolve */  
+if(cf.hp <= 0){
+  console.log("The enemy dies.");
+  alert("VICTORY!");
+  alert("Your current HP is:  "+charClass.hp);
+} else if (charClass.hp <= 0){
+  console.log("You have died.");
+  alert("DEATH and DISHONOR!\nGame Over!");
+  
+   }  // close if-else
+  }  // close while loop
+ } // close Raid 'if' statement
+} // close func Raid
+
+Raid(false);
+
+
+//////////////////
+/* Story Switch */
+//////////////////
+alert("Welcome to Functions & Flagons!\n\nYour choices will affect the outcome of the story.\nEnjoy!");
+console.log("welcome");
+
+
+    /* Individual Story Modules */
+function Woods(){
+  alert("You start down a forest path.  After a while, you come to a fork in the road.");
+  switch(prompt("Do you go left or right?","left"))
+  {
+    case "left": alert("A short time later, you find the entrance to a cave");
+      console.log("cave");
+      alert("Prepare for Battle!");
+      randomizer = '1';
+      Raid(true);
+      break;
+    case"right": alert("A long while later, you come to the top of a waterfall");
+      console.log("waterfall");
+      break;
+  }
+} // close Func Woods
+
+function Faust(){
+  alert("You have entered the city of Faust through the north gates into a bustling marketplace.")
+              alert("Before you, you see a city guard, a rich merchant, and a street urchin.")
+              
+  switch(prompt("Who do you approach first?\nThe guard, the merchant, the urchin", "the guard")){
+    case "the guard" : alert("The guard sends you to clean out the city sewers.");
+      console.log("sewers");
+      alert("Prepare for Battle!");
+      randomizer = '0';
+      Raid(true);
+      break;
+    case "the merchant": alert("The merchant sends you to his menagerie,\n where you fight to the death with captured monsters!")
+      console.log("menagerie");
+      alert("Prepare for Battle!");                    
+      Raid(true);
+      break;
+    case "the urchin" : alert("The urchin gives you 50 copper pieces.  The End!");
+      console.log("urchin, end");
+      break;
+    default: (Faust());
+      break;
+  }
+} // close func Faust
+
+function Tavern(){
+  switch(prompt("Have a beer, or head home?","have a beer")){
+    case "head home": alert("You head home early and sleep off your hangover!  The end!");
+      console.log("home, end");
+      break;
+    case "have a beer" : alert("You have another beer!");
+      console.log("beer");
+      switch(prompt("Now, what will you do?\nHave a beer, or head home?","have a beer")){
+        case "head home": alert("You head home, and with someone attractive to boot!  The end!");
+          console.log("home 2, end");
+          break;
+        case "have a beer": alert("You have another beer!");
+          console.log("beer 2");
+          switch(prompt("The tavern's closing! What will you do?\nHave a beer, or head home?","have a beer")){
+            case "head home" : alert("You stumble home as a drunken mess and run into monsters.");
+              console.log("home 3, end");
+              alert("Prepare for Battle!");
+              Raid(true);
+              break;
+            case "have a beer" : alert("You have angered the Brewmaster...\nPREPARE FOR BATTLE!");
+              console.log("brewmaster")
+              randomizer = '5';
+              Raid(true);
+              break;
+          }                      
+          break;
+      }
+      break;
+   }
+} // close func Tavern
+
+
+    /* Story Control */
+function Story(){
+  
+  switch(prompt("Please choose your starting area:  the woods, the city, or the tavern.","the woods")){
+      
+  case "the woods": alert("You are now in the woods!");
+                    console.log("woods");
+                    Woods();
+                    break;
+      
+  case "the city": alert("You are now in the city!");
+              console.log("city");
+              Faust();
+              break;
+      
+  case "the tavern": alert("You are now at the tavern!\nYou've had one drink 'on the house,' what will you do now?")
+              console.log("bar");
+              Tavern();
+              break;
+
+    default: (Story());
+      break;
+  } // close Story switch
+} // close func Story
+
+Story();
+
+
+
+
+/////////////////////
+// THE CRAP BUCKET //
+/////////////////////
+
+/*
+var Choice = function(){
+                         var x = prompt("You HIT!  Please choose your spell:", charClass.spells[0]);
+                         alert("You Choose:  "+x+".");
+                         console.log("You Choose:  "+x+".");
+                         return x;};
+/*
+
+
+  /* function (input) {
+  Math.floor(10*Math.random()+(charClass.spells[input]));} */         // spell input variable function - currently in test//
+
+
+
+    /* CE Encounter Environment
+function Encounter(){
+    alert("Brace for Encounter!")
+    console.log("Brace for Encounter!");
+  do{
+  
+  
+      while()
+      }
+ */
+ 
+
+/* Output
+alert(userName+"!  You are now a "+charClass.name+"!");
+alert("Your max hp is "+charClass.hp+" and your max mp is "+charClass.mp+"!");
+alert("Your spells are:  "+charClass.spells[0]+", "+
+            charClass.spells[2]+", and "+charClass.spells[4]);
+*/
+/* COut
+console.log(userName+"!  You are now a "+charClass.name+"!");
+console.log("Your max hp is "+charClass.hp+
+            " and your max mp is "+charClass.mp+"!");
+console.log("Your spells are:  "+charClass.spells[0]+", "+
+            charClass.spells[2]+", and "+charClass.spells[4]+".");
+ */
+
+</script>
+</body>
+</html>
